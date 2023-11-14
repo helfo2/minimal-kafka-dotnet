@@ -1,0 +1,13 @@
+{
+  "sdk": {
+    "version": "7.0.100",
+    "rollForward": "latestFeature"
+  },
+  "scripts": {
+    "run:infra": "docker compose up -d",
+    "run:api": "dotnet run --project api",
+    "run:consumer": "dotnet run --project consumerService",
+    "run:presentation": "(cd presentation; npm run start)",
+    "clean": "dotnet clean"
+ }
+}
