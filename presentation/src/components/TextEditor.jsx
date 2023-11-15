@@ -1,6 +1,7 @@
-import React, { useCallback, useEffect, useState, useRef } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Quill from "quill";
 import "quill/dist/quill.snow.css";
+import axios from "axios";
 
 const TOOLBAR_OPTIONS = [
   [{ header: [1, 2, 3, 4, 5, 6, false] }],
@@ -14,26 +15,23 @@ const TOOLBAR_OPTIONS = [
   ["clean"],
 ];
 
+const baseURL = "http://localhost:5220/api/v1";
+
 export default function TextEditor() {
-  const socketClient = useRef(null);
   const [quill, setQuill] = useState();
-
-  useEffect(() => {
-    socketClient.current = new WebSocket("ws://localhost:5193/wsa");
-
-    socketClient.current.onmessage = (msg) =>
-      console.log("Received ", msg.data);
-
-    return () => {
-      socketClient.current.close();
-    };
-  }, [socketClient]);
 
   useEffect(() => {
     const handler = (delta, oldDelta, source) => {
       if (source !== "user") return;
-      console.log("Sending ", delta);
-      socketClient.current.send(JSON.stringify(delta));
+      console.log("Sending ", JSON.stringify(delta));
+      axios
+        .post(`${baseURL}/Producer`, JSON.stringify(delta), {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        .then((response) => console.log(response.status))
+        .catch((error) => console.error(error));
     };
 
     if (quill != null) {
@@ -45,7 +43,7 @@ export default function TextEditor() {
         quill.off("text-change", handler);
       }
     };
-  }, [socketClient, quill]);
+  }, [quill]);
 
   const wrapperRef = useCallback((wrapper) => {
     if (wrapper == null) return;

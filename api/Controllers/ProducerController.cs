@@ -1,5 +1,4 @@
-using System.Net;
-using System.Net.Mime;
+using System.Text.Json;
 using Confluent.Kafka;
 using Microsoft.AspNetCore.Mvc;
 
@@ -39,7 +38,7 @@ public class ProducerController : ControllerBase
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
-    public async Task<IActionResult> PostDelta([FromBody] string delta)
+    public async Task<IActionResult> PostDelta([FromBody] JsonElement delta)
     {
         var config = new ProducerConfig
         {
@@ -52,10 +51,10 @@ public class ProducerController : ControllerBase
             using var producer = new ProducerBuilder<Null, string>(config).Build();
             var result = await producer.ProduceAsync(_topic, new Message<Null, string>()
             {
-                Value = delta
+                Value = delta.ToString()
             });
 
-            _logger.LogDebug("Delivered message to topic {Topic}", _topic);
+            _logger.LogDebug("Delivered message {Msg} to topic {Topic}", delta, _topic);
             return Ok();
         }
         catch (Exception ex)
