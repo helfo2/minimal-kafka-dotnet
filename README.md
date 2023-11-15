@@ -1,6 +1,6 @@
 # minimal-kafka-dotnet
 
-A basic beginner-friendly example of the communication flow between a Web client, an internal ASP.NET API and a Kafka topic consumer. The architecure looks like:
+A basic **fullstack** beginner-friendly example of the communication flow between a Web client, an internal ASP.NET API and a Kafka topic consumer. The architecure looks like:
 
 ![MinimalKafka drawio](https://github.com/helfo2/minimal-kafka-dotnet/assets/22845467/5f7373e2-7ef3-4130-8ee2-d495a25dae9f)
 
